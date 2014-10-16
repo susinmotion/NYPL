@@ -31,7 +31,7 @@ Use
 
 Sample
 ---
-see example.py
+see [example.py](https://github.com/susinmotion/NYPL/blob/master/example.py)
 
 Output
 ---
