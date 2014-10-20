@@ -1,5 +1,6 @@
 import requests, re
 from bs4 import BeautifulSoup
+import json
 
 class Book:
 	def __init__(self, title, author=None, link_to_copies=None):
@@ -66,15 +67,15 @@ def create_search_url(keyword=None, author=None, title=None):
 	#create search URL for catalog from at least one keyword, title or author
 	url = "http://nypl.bibliocommons.com/search?custom_query=%28"
 	if keyword:
-		url = url + "anywhere%3A(" + keyword + ") AND "
+		url = url + "anywhere%3A(" + keyword + ")"
 
 	if author:
-		url = url + "contributor%3A(" + author + ") AND "
+		url = url + "contributor%3A(" + author + ")"
 
 	if title:
-		url = url + "title%3A(" + title 
+		url = url + "title%3A(" + title + ")"
 
-	url = url + "%29%20%29&suppress=true&custom_edit=false"
+	url = url + "%20%29&suppress=true&custom_edit=false"
 	return url
 
 def get_title_author_av(pretty_source_code, lazy):
