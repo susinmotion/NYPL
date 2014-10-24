@@ -26,7 +26,7 @@ class Book:
 			self._copies = []
 		else:
 			self._copies = get_copies(self.link_to_copies)
-	
+
 	@property
 	def copies(self):
 		if self._copies == None:
@@ -47,7 +47,7 @@ class Copy:
 		self.status = status
 
 	def __str__(self):
-		returnString = "location: " + self.location + "\ncollection: " + self.collection + "\ncall number: " + self.callNo + "\nstatus: " + self.status
+		returnString = "location: " + str(self.location) + "\ncollection: " + str(self.collection) + "\ncall number: " + str(self.callNo) + "\nstatus: " + str(self.status)
 		return returnString + "\n"
 	
 	def __repr__(self):
@@ -65,12 +65,16 @@ def get_source (url):
 
 def create_search_url(keyword=None, author=None, title=None):
 	#create search URL for catalog from at least one keyword, title or author
+	if author and not title and not keyword:
+		url = "http://nypl.bibliocommons.com/search?utf8=%E2%9C%93&t=author&search_category=author&q=" + author + "&commit=Search&searchOpt=catalogue"
+		return url
+
 	url = "http://nypl.bibliocommons.com/search?custom_query=%28"
 	if keyword:
 		url = url + "anywhere%3A(" + keyword + ")"
 
 	if author:
-		url = url + "contributor%3A(" + author + ")"
+		url = url + "author%3A(" + author + ")"
 
 	if title:
 		url = url + "title%3A(" + title + ")"
@@ -108,20 +112,31 @@ def get_copies(url):
 
 	libraries = get_source(url).findAll("tr")
 	copies = []
+	location=None
+	collection= None
+	callNo=None
+	status=None
 	for library in libraries:
-		locations = library.findAll(testid = "item_branch_name")
-		collections = library.findAll(testid = "item_collection")
-		callNos = library.findAll(testid = "item_call_number")
-		statuses = library.findAll(testid = "item_status")
-		for i in range(len(locations)):
-			if locations[i]:
-				location = locations[i].text.strip()
-				collection = collections[i].text.strip()
-				callNo = callNos[i].text.strip()
-				status = statuses[i].text.strip()
+		try:
+			location = library.findNext(testid = "item_branch_name").text.strip()
+		except:
+			pass
+		try:
+			collection = library.findNext(testid = "item_collection").text.strip()
+		except:
+			pass
+		try:
+			callNo = library.findNext(testid = "item_call_number").text.strip()
+		except:
+			pass
+		try:
+			status = library.findNext(testid = "item_status").text.strip()
+		except:
+			pass
 
-				copy = Copy(location,collection,callNo,status)
-				copies.append(copy)
+		print location,collection,callNo,status
+		copy=Copy(location,collection,callNo, status)
+		copies.append(copy)
 
 	return copies
 
