@@ -67,19 +67,23 @@ def create_search_url(keyword=None, author=None, title=None):
 	#create search URL for catalog from at least one keyword, title or author
 	if author and not title and not keyword:
 		url = "http://nypl.bibliocommons.com/search?utf8=%E2%9C%93&t=author&search_category=author&q=" + author + "&commit=Search&searchOpt=catalogue"
-		return url
 
-	url = "http://nypl.bibliocommons.com/search?custom_query=%28"
-	if keyword:
-		url = url + "anywhere%3A(" + keyword + ")"
+	elif title and not author and not keyword:
+		url = "http://nypl.bibliocommons.com/search?utf8=%E2%9C%93&t=title&search_category=title&q=" + title + "&commit=Search&searchOpt=catalogue"
 
-	if author:
-		url = url + "author%3A(" + author + ")"
+	else:
+		url = "http://nypl.bibliocommons.com/search?custom_query=%28"
+		if keyword:
+			url = url + "anywhere%3A(" + keyword + ")"
 
-	if title:
-		url = url + "title%3A(" + title + ")"
+		if author:
+			url = url + "author%3A(" + author + ")"
 
-	url = url + "%20%29&suppress=true&custom_edit=false"
+		if title:
+			url = url + "title%3A(" + title + ")"
+
+		url = url + "%20%29&suppress=true&custom_edit=false"
+		
 	return url
 
 def get_title_author_av(pretty_source_code, lazy):
